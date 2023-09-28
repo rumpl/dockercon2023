@@ -15,3 +15,6 @@ apply:
 
 destroy:
 	${RUN} destroy
+
+format:
+	${RUN} fmt -recursive
