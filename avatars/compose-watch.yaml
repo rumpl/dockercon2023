@@ -1,0 +1,34 @@
+services:
+  api:
+    image: avatars-api
+    build:
+      context: .
+      target: dev_watch
+      dockerfile: ./api/Dockerfile
+    ports:
+      - 5734:80
+    develop:
+      watch:
+        - path: api/requirements.txt
+          action: rebuild
+        - path: api/
+          target: /app/api/
+          action: sync
+
+  web:
+    image: avatars-web
+    build:
+      context: .
+      target: dev_watch
+      dockerfile: ./web/Dockerfile
+    ports:
+      - 5735:5173
+    develop:
+      watch:
+        - path: web/package.json
+          action: rebuild
+        - path: web/yarn.lock
+          action: rebuild
+        - path: web/
+          target: /app
+          action: sync
