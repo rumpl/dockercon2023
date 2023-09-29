@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import './App.css'
+import React, { useEffect, useState } from "react";
+import "./App.css";
 import Parts from "./Parts";
 
 function App() {
@@ -15,58 +15,63 @@ function App() {
         }
 
         const parts = {};
-        Object.keys(spec.parts).forEach(partName => {
+        Object.keys(spec.parts).forEach((partName) => {
             // only pick a value for parts that exist in a group within the editor
             // to prevent setting a part you can't change
-            if (Object.values(spec.groups).some(g => g.includes(partName))) {
+            if (Object.values(spec.groups).some((g) => g.includes(partName))) {
                 const partType = spec.parts[partName];
                 const values = Object.values(spec.values[partType]);
                 parts[partName] = values[Math.floor(Math.random() * values.length)];
             }
-        })
+        });
         setPartChoices(parts);
     };
 
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
         fetch("/api/avatar/spec")
-            .then(res => res.json())
-            .then(result => {
-                setSpec(result);
-                // lock in initial choices
-                randomizeChoices(result)
-                setLoading(false)
-            }, error => {
-                setError(error)
-                setLoading(false)
-            })
+            .then((res) => res.json())
+            .then(
+                (result) => {
+                    setSpec(result);
+                    // lock in initial choices
+                    randomizeChoices(result);
+                    setLoading(false);
+                },
+                (error) => {
+                    setError(error);
+                    setLoading(false);
+                },
+            );
     }, []);
 
     const onPartChoice = (name, value) => {
-        setPartChoices({...partChoices, [name]: value})
-    }
+        setPartChoices({ ...partChoices, [name]: value });
+    };
 
     useEffect(() => {
         if (loading) {
             setAvatarURL(null);
             return;
         }
-        setAvatarURL('/api/avatar?' + new URLSearchParams(partChoices));
+        setAvatarURL("/api/avatar?" + new URLSearchParams(partChoices));
     }, [partChoices, loading]);
 
     if (error) {
-        return <div>Failed to load: {error}</div>
+        return <div>Failed to load: {error}</div>;
     } else if (loading) {
-        return <div>Loading...</div>
+        return <div>Loading...</div>;
     } else {
-        return <>
-            <div className={"avatar-wrapper"}>
-                <h1 className="avatar-title">AVATARSSS</h1>
-                <img className={"avatar"} src={avatarURL} alt="Your Tilt Avatar"/>
-            </div>
-            <Parts spec={spec} choices={partChoices} onChange={onPartChoice}/>
-        </>
+        return (
+            <>
+                <div className={"avatar-wrapper"}>
+                    <h1 className="avatar-title">Hello, Dockercon!</h1>
+                    <img className={"avatar"} src={avatarURL} alt="Your Tilt Avatar" />
+                </div>
+                <Parts spec={spec} choices={partChoices} onChange={onPartChoice} />
+            </>
+        );
     }
 }
 
-export default App
+export default App;
